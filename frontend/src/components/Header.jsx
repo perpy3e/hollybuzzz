@@ -56,7 +56,7 @@ const Header = () => {
                backgroundPosition: 'center bottom',
                backgroundRepeat: 'no-repeat',
                top: 'auto',
-               bottom: '-500px',
+               bottom: '-250px',
             }}
          >
             {/* Footer Bottom */}
