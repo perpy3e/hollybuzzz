@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Finger+Paint&display=swap" rel="stylesheet"> 
+    <title>Whack-a-Mole Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            
+        }
+
+        body {
+            font-family: 'Finger Paint', cursive;
+            background-color: #e6c590;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+            color: #6a2e16;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #6a2e16;
+        }
+
+        #score {
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #6a2e16;
+        }
+
+        #gameOver {
+            font-size: 30px;
+            font-weight: bold;
+            color: red;
+            display: none;
+            margin-top: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 0px;
+            justify-content: center;
+        }
+
+        #restartButton, #pauseButton, #resumeButton {
+    padding: 12px 24px;
+    font-size: 18px;
+    background-color: #cd812e;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-family: 'Finger Paint', cursive; /* Added font-family here */
+}
+
+        #pauseButton {
+            background-color: #8e6e53;
+        }
+
+        #resumeButton {
+            background-color: #a4c639;
+            display: none;
+        }
+
+        #restartButton:hover, #pauseButton:hover, #resumeButton:hover {
+            background-color: #6a2e16;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 150px);
+            grid-template-rows: repeat(3, 150px);
+            gap: 20px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .hole {
+            width: 150px;
+            height: 150px;
+            background-color: #8e6e53;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .hole:hover {
+            transform: scale(1.05);
+        }
+
+        .mole {
+            width: 60px;
+            height: 60px;
+            background-color: #2e8b57;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: bottom 1.5s ease-in-out; /* Adjusted transition for smoother effect */
+            visibility: hidden;
+        }
+
+        .mole.visible {
+            visibility: visible;
+            bottom: 0;
+        }
+
+        .mole.hit {
+            background-color: #FFEB3B;
+            transform: scale(0.9);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .mole.red {
+            background-color: #d9534f;
+        }
+
+        .hole img {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hole img.mole-img {
+            width: 30px;
+            height: 30px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+        }
+
+        .hole:hover img.mole-img {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1.2); 
+            transition: opacity 0.3s ease, transform 0.3s ease; 
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Whack-a-Mole Game</h1>
+    <div id="score">Score: 0</div>
+    <div id="gameOver">Game Over!</div>
+    <div class="button-container">
+        <button id="pauseButton" onclick="pauseGame()">Pause Game</button>
+        <button id="resumeButton" onclick="resumeGame()">Resume Game</button>
+        <button id="restartButton" onclick="restartGame()">Restart Game</button>
+    </div>
+    <div class="game-board">
+        <div class="hole">
+            <div class="mole" data-index="0"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="1"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="2"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="3"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="4"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="5"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="6"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="7"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+        <div class="hole">
+            <div class="mole" data-index="8"></div>
+            <img src="https://www.iconsdb.com/icons/preview/green/mole-xxl.png" class="mole-img">
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let misses = 0;
+        let gamePaused = false;
+        const scoreDisplay = document.getElementById('score');
+        const gameOverDisplay = document.getElementById('gameOver');
+        const restartButton = document.getElementById('restartButton');
+        const pauseButton = document.getElementById('pauseButton');
+        const resumeButton = document.getElementById('resumeButton');
+        const moles = document.querySelectorAll('.mole');
+        const holes = document.querySelectorAll('.hole');
+        let currentMole = null;
+        let moleInterval;
+
+        function showRandomMole() {
+            if (currentMole) {
+                currentMole.classList.remove('visible');
+            }
+
+            if (misses >= 5 || gamePaused) return;
+
+            const randomIndex = Math.floor(Math.random() * moles.length);
+            currentMole = moles[randomIndex];
+            currentMole.classList.add('visible');
+
+            // Adjust transition for smoother effect
+            currentMole.style.transition = 'bottom 1.5s ease-in-out';  // Slower transition for better experience
+
+            if (Math.random() > 0.8) {
+                currentMole.classList.add('red');
+            } else {
+                currentMole.classList.remove('red');
+            }
+        }
+
+        function handleMoleClick(event) {
+            if (gamePaused) return;
+
+            if (event.target.classList.contains('mole')) {
+                if (event.target.classList.contains('red')) {
+                    endGame();
+                } else if (event.target === currentMole) {
+                    score++;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    event.target.classList.add('hit');
+                    setTimeout(() => {
+                        event.target.classList.remove('hit');
+                        showRandomMole();
+                    }, 500);
+                } else {
+                    misses++;
+                }
+            }
+        }
+
+        const bgMusic = new Audio('./audio/ost.mp3')
+            bgMusic.loop = true;
+
+        function startGame() {
+            bgMusic.play();
+            moleInterval = setInterval(showRandomMole, 1200); // Show mole every 1.2 seconds
+            holes.forEach(hole => hole.addEventListener('click', handleMoleClick));
+            showRandomMole();
+        }
+
+        function endGame() {
+            clearInterval(moleInterval);
+            gameOverDisplay.style.display = 'block';
+            holes.forEach(hole => hole.removeEventListener('click', handleMoleClick));
+        }
+
+        function restartGame() {
+            score = 0;
+            misses = 0;
+            scoreDisplay.textContent = `Score: ${score}`;
+            gameOverDisplay.style.display = 'none';
+            startGame();
+        }
+
+        function pauseGame() {
+            gamePaused = true;
+            pauseButton.style.display = 'none';
+            resumeButton.style.display = 'inline-block';
+        }
+
+        function resumeGame() {
+            gamePaused = false;
+            pauseButton.style.display = 'inline-block';
+            resumeButton.style.display = 'none';
+        }
+
+        startGame();
+    </script>
+
+</body>
+</html>

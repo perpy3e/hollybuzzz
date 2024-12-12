@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./floppybird.css" type="text/css"/>
+    <script src="/floppybird.js" async></script>
+    <audio id="gameAudio" loop muted>
+        <source src="./audio/floppy.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        document.addEventListener('click', () => {
+        const audio = document.getElementById('gameAudio');
+        audio.muted = false;
+        audio.play().catch(error => console.log("Audio play error:", error));
+    });
+    </script>
+
+
+</head>
+
+<body>
+    <header>
+        <h1>Floppy Bird</h1>
+        <div id="score-container">
+            <div id="bestScore"></div>
+            <div id="currentScore"></div>
+        </div>
+    </header>
+
+    <canvas id="canvas" width="431" height="700"></canvas>
+
+    <script src="floppybird.js"></script>
+</body>
+
+</html>

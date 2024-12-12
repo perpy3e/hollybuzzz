@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Finger+Paint&display=swap" rel="stylesheet"> 
+</head>
+<style>
+    body {
+      font-family: 'Finger Paint', cursive;
+      background-color: #e6c590;
+    }
+</style>
+<body class="flex items-center justify-center h-screen">
+  <div class="text-center">
+    <h1 class="text-7xl font-bold mb-6" style="color: #6a2e16;">TIC TAC TOE</h1>
+
+    <div id="board" class="grid grid-cols-3 gap-4 w-96 h-96 mx-auto mb-12">
+    </div>
+    <div id="message" class="mt-8 mb-4 text-3xl font-semibold" style="color: #645b34;"></div>
+    
+   
+    <button onclick="resetGame()" class="mt-4 px-6 py-2 text-white font-bold rounded" style="background-color: #cd812e;">
+      Reset Game
+    </button>
+  </div>
+
+  <script>
+    const playerTurn = new Audio('./audio/player.mp3');
+    const botTurn = new Audio('./audio/bot.mp3')
+    const winSound = new Audio('./audio/win.mp3')
+    const drawSound = new Audio('./audio/draw.mp3')
+    const loseSound = new Audio('./audio/lose.mp3')
+    const ost = new Audio('./audio/bg.mp3')
+
+  
+
+    const board = Array(9).fill(null);
+    let currentPlayer = 'X';
+    const boardElement = document.getElementById("board");
+    const messageElement = document.getElementById("message");
+
+    // Winning combinations
+    const winCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+      [0, 4, 8], [2, 4, 6]             // Diagonals
+    ];
+
+    // Colors for Player X and Bot 
+    const playerColor = '#fd6846'; 
+    const botColor = '#69dfe7'; 
+
+    // Initialize the board
+    function createBoard() {
+      boardElement.innerHTML = '';
+      board.forEach((_, index) => {
+        const cell = document.createElement("div");
+        cell.className = "bg-white border border-gray-300 text-5xl font-bold flex items-center justify-center cursor-pointer w-32 h-32"; // Larger size for cells
+        cell.addEventListener("click", () => makeMove(index));
+        boardElement.appendChild(cell);
+      });
+      updateMessage(`Player ${currentPlayer}'s turn`);
+    }
+
+    // Handle player's move
+    function makeMove(index) {
+      if (board[index] || checkWinner()) return; 
+
+      ost.play();
+      ost.loop = true;
+      
+
+      board[index] = currentPlayer;
+      const cell = boardElement.children[index];
+      cell.textContent = currentPlayer;
+
+      playerTurn.play()
+      
+      if (currentPlayer === 'X') {
+        cell.style.color = playerColor; 
+      } else {
+        cell.style.color = botColor; 
+      }
+
+      if (checkWinner()) {
+        winSound.play();
+        updateMessage(`Player ${currentPlayer} wins!`);
+        
+      } else if (board.every(cell => cell)) {
+        drawSound.play();
+        updateMessage("It's a draw!");
+      } else {
+        currentPlayer = 'O'; 
+        updateMessage("Bot's turn"); 
+        setTimeout(botMove, 1000); // Delay 
+      }
+    }
+
+    // Simple bot 
+    function botMove() {
+      if (checkWinner()) return;
+
+      botTurn.play();
+
+      const emptyCells = board.map((val, idx) => val === null ? idx : null).filter(idx => idx !== null);
+      const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+      board[randomIndex] = 'O';
+      const cell = boardElement.children[randomIndex];
+      cell.textContent = 'O';
+
+      
+      cell.style.color = botColor;
+
+      if (checkWinner()) {
+        updateMessage(`Bot wins!`); 
+        loseSound.play();
+      } else if (board.every(cell => cell)) {
+        updateMessage("It's a draw!");
+        drawSound.play();
+      } else {
+        currentPlayer = 'X'; 
+        updateMessage(`Player ${currentPlayer}'s turn`);
+      }
+    }
+
+   
+    function checkWinner() {
+      return winCombinations.some(combination => 
+        combination.every(index => board[index] === currentPlayer)
+      );
+    }
+
+    
+    function updateMessage(message) {
+      messageElement.textContent = message;
+    }
+
+   
+    function resetGame() {
+      board.fill(null);
+      currentPlayer = 'X';
+      createBoard();
+    }
+
+    
+    createBoard();
+  </script>
+</body>
+</html>
