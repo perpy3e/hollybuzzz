@@ -145,7 +145,10 @@ const Login = () => {
                 </form>
 
             </div>
-
+            <footer
+                className="absolute bottom-0 left-0 right-0 text-[#366a56] text-center py-4">
+                <p className="text-sm">© 2024 HOLLYBUZZZ Inc. All rights reserved.</p>
+            </footer>
         </div>
     )
 }

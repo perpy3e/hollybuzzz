@@ -14,7 +14,6 @@ import pacmanImg from '../../assets/thumbnail/PACMAN.png'
 import whackAMoleImg from '../../assets/thumbnail/WhackAMole.png'
 import TictactoeImg from '../../assets/thumbnail/TicTacToe.png'
 
-
 const GameCardData = [
     {
         id: "Memo-game",
@@ -99,7 +98,7 @@ const Games = () => {
                 minHeight: '100vh',
             }}>
 
-            
+
 
             <Navbar />
             <BackgroundMusic />
@@ -348,6 +347,13 @@ const Games = () => {
                     </div>
                 </div>
             </section>
+            <footer
+                className="text-white bg-cover bg-center p-4">
+                {/* Footer Bottom */}
+                <div className="text-[#f0f2d5] text-center py-4">
+                    <p className="text-sm">© 2024 HOLLYBUZZZ Inc. All rights reserved.</p>
+                </div>
+            </footer>
         </div>
     );
 };

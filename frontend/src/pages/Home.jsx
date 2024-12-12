@@ -33,7 +33,7 @@ const Home = () => {
       </div>
 
     
-      <section className="leaderboard-section w-full p-8 bg-blue-100 bg-opacity-80 z-10 relative">
+      <section className="leaderboard-section w-full p-8 bg-transparent z-10 relative">
         
         <Snowfall color="white" snowflakeCount={100} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }} />
         

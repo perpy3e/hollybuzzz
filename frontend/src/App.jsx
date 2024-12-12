@@ -43,7 +43,6 @@ const App = () => {
         <Route path="/games/WhackAMole" element={<WhackAMole />} />
 
       </Routes>
-      <Footer />
     </div>
   )
 }
