@@ -2,10 +2,13 @@
   "name": "coolkiddo-games",
   "version": "1.0.0",
   "main": "index.js",
+  "homepage": "https://perpy3e.github.io/hollybuzzz",
   "scripts": {
     "dev": "npm-run-all --parallel server frontend",
     "server": "cd server && nodemon server.js",
-    "frontend": "cd frontend && npm run dev"
+    "frontend": "cd frontend && npm run dev",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "keywords": [],
   "author": "",
