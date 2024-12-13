@@ -12,7 +12,7 @@ const port = process.env.PORT || 4040;
 // Connect to db
 connectDB();
 
-const allowedOrigins = ['https://hollybuzzz-84th.vercel.app']
+const allowedOrigins = ['https://hollybuzz.onrender.com']
 
 // middleware
 app.use(express.json());
