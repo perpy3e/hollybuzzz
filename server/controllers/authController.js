@@ -67,6 +67,7 @@ export const login = async (req, res) => {
 
         //check email
         const user = await userModel.findOne({ email });
+        console.log('User found:', user);
         if (!user) {
             return res.json({ success: false, message: "Invalid Email" })
         }
