@@ -18,7 +18,7 @@ const allowedOrigins = ['https://hollybuzz.onrender.com']
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: allowedOrigins,
+  origin: '*',
   credentials: true 
 }));
 
