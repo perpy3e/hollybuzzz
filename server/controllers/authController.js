@@ -58,6 +58,7 @@ export const register = async (req, res) => {
 // User Log in 
 export const login = async (req, res) => {
     const { email, password } = req.body;
+    console.log('Login attempt:', req.body);
 
     if (!email || !password) {
         return res.json({ success: false, message: "Email and Password are required" })
