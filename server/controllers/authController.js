@@ -6,7 +6,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-
 // User Registerr
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -33,7 +32,7 @@ export const register = async (req, res) => {
             //if production = true if not = false
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 160 * 60 * 1000
+            maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
         // Welcome Email
@@ -85,7 +84,7 @@ export const login = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 160 * 60 * 1000
+            maxAge: 7 * 24 * 60 * 60 * 1000
 
         });
         return res.json({ success: true });
