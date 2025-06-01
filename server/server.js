@@ -5,14 +5,28 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js"; // connect db
 import authRouter from "./routes/authRoutes.js"; // router user
 import userRouter from "./routes/userRoutes.js"; //user name/verify
+import path from 'path';
+import { fileURLToPath } from "url";
 
 const app = express();
 const port = process.env.PORT || 4040;
 
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'frontend', 'build')))
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'))
+})
+
+
+
 // Connect to db
 connectDB();
 
-const allowedOrigins = ['https://hollybuzz.onrender.com']
+const allowedOrigins = ['https://hollybuzzz.onrender.com']
 
 // middleware
 app.use(express.json());
