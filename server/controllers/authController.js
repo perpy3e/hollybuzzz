@@ -31,7 +31,7 @@ export const register = async (req, res) => {
             httpOnly: true,
             //if production = true if not = false
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: 'none',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
@@ -83,7 +83,7 @@ export const login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: 'none',
             maxAge: 7 * 24 * 60 * 60 * 1000
 
         });
@@ -101,7 +101,7 @@ export const logout = async (req, res) => {
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+            sameSite: 'none',
         })
 
         return res.json({ success: true, message: "Logged Out" })
@@ -182,86 +182,96 @@ export const verifyEmail = async (req, res) => {
 };
 
 //check if user is authenticated
+
 export const isAuthenticated = async (req, res) => {
     try {
-        return res.json({ success: true });
+        const { token } = req.cookies;
+        if (!token) {
+            return res.json({ success: false, message: 'Not Authorized' });
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded.id) {
+            return res.json({ success: false, message: 'Not Authorized' });
+        }
+        return res.json({ success: true, message: 'User is authenticated', userId: decoded.id });
     } catch (error) {
         return res.json({ success: false, message: error.message });
     }
 };
 
 //Send Reset Password OTP
-export const sendResetOtp = async (req,res) => {
-const {email} = req.body;
+export const sendResetOtp = async (req, res) => {
+    const { email } = req.body;
 
-if(!email) {
-    return res.json({success:false,message:'Email is required'});
-}
-
-try{
-    const user = await userModel.findOne({email});
-
-    if(!user){
-        return res.json({success:false,message:'User not found'});
+    if (!email) {
+        return res.json({ success: false, message: 'Email is required' });
     }
 
-    const otp = String(Math.floor(100000 + Math.random() * 900000))
-    user.resetOtp = otp;
-    user.resetOtpExpireAt = Date.now() + 15 * 60 * 60 * 1000
+    try {
+        const user = await userModel.findOne({ email });
 
-    //save 
-    await user.save();
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
 
-    const mailOptions = {
-        from: process.env.SENDER_EMAIL,
-        to: user.email,
-        subject: 'Password Reset OTP',
-        text: `Your OTP for resetting password is ${otp}. Use this OTP to proceed with resetting 
+        const otp = String(Math.floor(100000 + Math.random() * 900000))
+        user.resetOtp = otp;
+        user.resetOtpExpireAt = Date.now() + 15 * 60 * 60 * 1000
+
+        //save 
+        await user.save();
+
+        const mailOptions = {
+            from: process.env.SENDER_EMAIL,
+            to: user.email,
+            subject: 'Password Reset OTP',
+            text: `Your OTP for resetting password is ${otp}. Use this OTP to proceed with resetting 
         your password.`
+        }
+        await transporter.sendMail(mailOptions)
+
+        return res.json({ success: true, message: 'OTP is sent to your email' });
+
+    } catch {
+        return res.json({ success: false, message: error.message });
     }
-    await transporter.sendMail(mailOptions)
-
-    return res.json({success:true , message: 'OTP is sent to your email'});
-
-} catch{
-    return res.json({ success: false, message: error.message });
-}
 }
 
 //Reset User Password after verify otp
-export const resetPassword = async (req,res) => {
+export const resetPassword = async (req, res) => {
 
-   const {email,otp,newPassword} = req.body;
+    const { email, otp, newPassword } = req.body;
 
-   if(!email || !otp || !newPassword){
-    return res.json({success: false , message: 'Email, OTP, and new password is required'});
-   }
-   try {
+    if (!email || !otp || !newPassword) {
+        return res.json({ success: false, message: 'Email, OTP, and new password is required' });
+    }
+    try {
 
-     const user = await userModel.findOne({email});
-     if(!user){
-        return res.json({success: false , message: 'User not found'});
-     }
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
 
-     if(user.resetOtp === ""|| user.resetOtp !== otp){
-        return res.json({success: false , message: 'Invalid OTP'});
-     }
+        if (user.resetOtp === "" || user.resetOtp !== otp) {
+            return res.json({ success: false, message: 'Invalid OTP' });
+        }
 
-     if(user.resetOtpExpireAt < Date.now()){
-        return res.json({success: false , message: 'OTP Expired'});
-     }
+        if (user.resetOtpExpireAt < Date.now()) {
+            return res.json({ success: false, message: 'OTP Expired' });
+        }
 
-     const hashedPassword = await bcrypt.hash(newPassword,10);
-     user.password = hashedPassword;
-     user.resetOtp = '';
-     user.resetOtpExpireAt = 0;
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        user.resetOtp = '';
+        user.resetOtpExpireAt = 0;
 
-     await user.save();
+        await user.save();
 
-     return res.json({success: true , message: 'Password has been reset successfully'});
+        return res.json({ success: true, message: 'Password has been reset successfully' });
 
-   } catch (error) {
-    return res.json({ success: false, message: error.message });
-   }
+    } catch (error) {
+        return res.json({ success: false, message: error.message });
+    }
 }
+
 

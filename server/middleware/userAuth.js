@@ -7,7 +7,7 @@ const userAuth = async (req, res, next) => {
   console.log(token)
 
   if (!token) {
-    return res.json({ success: false, message: 'Not Authorized. Login Again' });
+    return res.json({ success: false, message: 'Not Authorized. Non-Token' });
   }
    try {
        const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
@@ -23,9 +23,6 @@ const userAuth = async (req, res, next) => {
        res.json({ success: false, message: error.message }); 
    }
 }
-
-
-
 
 
 export default userAuth;
