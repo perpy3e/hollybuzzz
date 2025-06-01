@@ -9,7 +9,8 @@
     "frontend": "cd frontend && npm run dev",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d frontend/public",
-    "build": "react-scripts build"
+    "build": "cd frontend && npm install && npm run build",
+    "start": "node server/index.js"
   },
   "keywords": [],
   "author": "",
