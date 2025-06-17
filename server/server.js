@@ -20,7 +20,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // CORS config
-const allowedOrigins = ['https://hollybuzz.onrender.com'];
+const allowedOrigins = ['https://hollybuzzs.onrender.com'];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
