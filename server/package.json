@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
-    "build": "cd ../frontend && npm install && npx vite build"
+    "build": "cd ../src/frontend && npm install && npx vite build"
   },
   "author": "",
   "license": "ISC",

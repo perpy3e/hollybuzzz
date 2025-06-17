@@ -9,7 +9,6 @@
 //     chunkSizeWarningLimit: 1000 // Addresses the chunk size warning
 //   }
 // })
-
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
